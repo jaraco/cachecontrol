@@ -86,16 +86,15 @@ class CacheController(object):
         no_cache = 'no-cache' in cc
         max_age_zero = cc.get('max-age', None) == 0
 
-        # Request is not cacheable
         if no_cache or max_age_zero:
+            # Request is not cacheable
             return False
 
-        # It is in the cache, so lets see if it is going to be
-        # fresh enough
+        # Attempt to load the response from the cache
         resp = self.serializer.loads(request, self.cache.get(cache_url))
 
-        # Check to see if we have a cached object
         if not resp:
+            # Request was not cached
             return False
 
         headers = CaseInsensitiveDict(resp.headers)
