@@ -75,6 +75,10 @@ class CacheController(object):
         return retval
 
     def cached_request(self, request):
+        """
+        Given a request, return the cached response if suitable or False
+        otherwise.
+        """
         cache_url = self.cache_url(request.url)
         cc = self.parse_cache_control(request.headers)
 
