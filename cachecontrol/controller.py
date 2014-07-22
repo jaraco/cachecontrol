@@ -80,11 +80,10 @@ class CacheController(object):
 
         # non-caching states
         no_cache = 'no-cache' in cc
-        if 'max-age' in cc and cc['max-age'] == 0:
-            no_cache = True
+        max_age_zero = cc.get('max-age', None) == 0
 
-        # Bail out if no-cache was set
-        if no_cache:
+        # Request is not cacheable
+        if no_cache or max_age_zero:
             return False
 
         # It is in the cache, so lets see if it is going to be
