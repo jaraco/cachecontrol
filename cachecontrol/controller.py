@@ -79,7 +79,7 @@ class CacheController(object):
         cc = self.parse_cache_control(request.headers)
 
         # non-caching states
-        no_cache = True if 'no-cache' in cc else False
+        no_cache = 'no-cache' in cc
         if 'max-age' in cc and cc['max-age'] == 0:
             no_cache = True
 
