@@ -133,7 +133,6 @@ class CacheController(object):
                 min_fresh = int(cc['min-fresh'])
             except ValueError:
                 min_fresh = 0
-            # adjust our current age by our min fresh
             current_age += min_fresh
 
         # see how fresh we actually are
