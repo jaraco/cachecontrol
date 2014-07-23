@@ -1,7 +1,5 @@
 import io
 
-from requests.structures import CaseInsensitiveDict
-
 from .compat import HTTPResponse, pickle
 
 
@@ -9,11 +7,9 @@ class Serializer(object):
 
     def dumps(self, request, response, body=None):
         """
-        Given a request and response, return a byte string of the response
-        suitable for storing in a cache.
+        Given a requests.Request and requests.Response, return a byte string
+        of the response suitable for storing in a cache.
         """
-        response_headers = CaseInsensitiveDict(response.headers)
-
         if body is None:
             body = response.read(decode_content=False)
             response._fp = io.BytesIO(body)
@@ -32,8 +28,8 @@ class Serializer(object):
 
         # Construct our vary headers
         data["vary"] = {}
-        if "vary" in response_headers:
-            varied_headers = response_headers['vary'].split(',')
+        if "vary" in response.headers:
+            varied_headers = response.headers['vary'].split(',')
             for header in varied_headers:
                 header = header.strip()
                 data["vary"][header] = request.headers.get(header, None)
