@@ -97,11 +97,9 @@ class CacheController(object):
             # Request was not cached
             return False
 
-        headers = CaseInsensitiveDict(resp.headers)
-
         now = time.time()
         date = calendar.timegm(
-            parsedate_tz(headers['date'])
+            parsedate_tz(resp.headers['date'])
         )
         current_age = max(0, now - date)
 
@@ -109,14 +107,14 @@ class CacheController(object):
         # urllib3 response object. This may not be best since we
         # could probably avoid instantiating or constructing the
         # response until we know we need it.
-        resp_cc = self.parse_cache_control(headers)
+        resp_cc = self.parse_cache_control(resp.headers)
 
         # determine freshness
         freshness_lifetime = 0
         if 'max-age' in resp_cc and resp_cc['max-age'].isdigit():
             freshness_lifetime = int(resp_cc['max-age'])
-        elif 'expires' in headers:
-            expires = parsedate_tz(headers['expires'])
+        elif 'expires' in resp.headers:
+            expires = parsedate_tz(resp.headers['expires'])
             if expires is not None:
                 expire_time = calendar.timegm(expires) - date
                 freshness_lifetime = max(0, expire_time)
@@ -142,7 +140,7 @@ class CacheController(object):
             return resp
 
         # we're not fresh. If we don't have an Etag, clear it out
-        if 'etag' not in headers:
+        if 'etag' not in resp.headers:
             self.cache.delete(cache_url)
 
         # return the original handler
