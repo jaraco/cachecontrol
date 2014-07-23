@@ -8,6 +8,10 @@ from .compat import HTTPResponse, pickle
 class Serializer(object):
 
     def dumps(self, request, response, body=None):
+        """
+        Given a request and response, return a byte string of the response
+        suitable for storing in a cache.
+        """
         response_headers = CaseInsensitiveDict(response.headers)
 
         if body is None:
